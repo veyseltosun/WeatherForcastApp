@@ -8,7 +8,16 @@ const Search = ({onSearchChange}) =>{
     const loadOptions = (inputValue) =>{
         return fetch(`${GEO_API_URL}/cities?minPopulation=100000&namePrefix=${inputValue}`, geoApiOptions)
 	.then(response => response.json())
-	.then(response => console.log(response))
+	.then(response =>{
+        return{
+            options : response.data.map((city) =>{
+                return{
+                    value: `${city.latitude} ${city.longitude}`,
+                    label: `${city.name}, ${city.countryCode}`,
+                }
+            })
+        }
+    })
 	.catch(err => console.error(err));
         
     }
@@ -23,7 +32,7 @@ const Search = ({onSearchChange}) =>{
 
        <AsyncPaginate
          placeholder="Search for city"
-         debounceTimeout={600}
+         debounceTimeout={6000}
          value={search}
          onChange={handleOnChange}
          loadOptions={loadOptions}
